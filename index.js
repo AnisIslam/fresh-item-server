@@ -11,7 +11,11 @@ const app = express()
 
 app.use(bodyParser.json());
 app.use(cors());
-const port = 4000
+const port = 4000;
+
+app.get('/',(req,res)=>{
+    res.send("hello from db. It's working.")
+})
 
 // console.log(process.env.DB_USER);
 
