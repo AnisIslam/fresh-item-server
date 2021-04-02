@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(cors());
 const port = 4000;
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send("hello from db. It's working.")
 })
 
@@ -26,19 +26,16 @@ client.connect(err => {
     const ordersCollection = client.db("myShop").collection("orders");
     console.log('db connected');
 
-
     //Post data at db server
-   //Post data at db server
-   app.post('/addProduct', (req, res) => {
-    const newProduct = req.body;
-    console.log('adding new product', newProduct);
-    productsCollection.insertOne(newProduct)
-        .then(result => {
-            // console.log(result);
-            console.log(result.insertedCount);
-            res.send(result.insertedCount > 0)
-        })
-})
+    app.post('/addProduct', (req, res) => {
+        const newProduct = req.body;
+        console.log('adding new product', newProduct);
+        productsCollection.insertOne(newProduct)
+            .then(result => {
+                console.log(result.insertedCount);
+                res.send(result.insertedCount > 0)
+            })
+    })
 
 
     app.get('/products', (req, res) => {
@@ -50,17 +47,17 @@ client.connect(err => {
 
     app.get('/checkOut/:name', (req, res) => {
         productsCollection.find({ name: req.params.name })
-        .toArray((err, items) => {
-          res.send(items[0]);
-        });
-      });
+            .toArray((err, items) => {
+                res.send(items[0]);
+            });
+    });
 
-      app.delete('/deleteProduct/:id', (req, res) => {
+    app.delete('/deleteProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id);
-        console.log('delete this',id);
-        productsCollection.findOneAndDelete({_id: id})
-        .then(documents => res.send(!!documents.value))
-        
+        // console.log('delete this', id);
+        productsCollection.findOneAndDelete({ _id: id })
+            .then(documents => res.send(!!documents.value))
+
     })
 
     // For order
@@ -69,37 +66,17 @@ client.connect(err => {
         console.log(order);
         ordersCollection.insertOne(order)
             .then(result => {
-                console.log(result.insertedCount);
                 res.send(result.insertedCount > 0)
             })
     })
 
-// Find orders by mail
-app.get('/orders', (req,res)=>{
-    ordersCollection.find({email: req.query.email})
-    .toArray((err, documents) => {
-        res.send(documents);
+    // Find orders by mail
+    app.get('/orders', (req, res) => {
+        ordersCollection.find({ email: req.query.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
     })
-})
-   
-
-    // app.post('/productsByKeys', (req, res) => {
-    //     const productKeys = req.body;
-    //     productsCollection.find({ key: { $in: productKeys } })
-    //     .toArray((err,documents) =>{
-    //         res.send(documents);
-    //     })
-    // })
-
-    // app.post('/addOrder', (req, res) => {
-    //     const order = req.body;
-    //     // console.log(products);
-    //     ordersCollection.insertOne(order)
-    //         .then(result => {
-    //             res.send(result.insertedCount > 0)
-    //         })
-    // })
-
 
 });
 
