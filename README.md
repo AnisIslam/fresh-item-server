@@ -1,1 +1,1 @@
-# full-stack-client-AnisIslam
+This repository is a server side part of Fresh Food project
